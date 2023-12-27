@@ -3,15 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./source/style.scss" />
     <script type="module" src="./source/index.ts"></script>
     <title>Timer</title>
   </head>
   <body>
     <div class="timer-container">
       <div class="timer">
-        <input class="timer__input" type="number" value="30" min="0" />
-        <button class="timer__start">START</button>
-        <button class="timer__pause">PAUSE</button>
+        <svg
+          class="timer__svg"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            class="timer__circle"
+            cx="50"
+            cy="50"
+            r="45"
+            stroke-width="5"
+            fill="transparent"
+            stroke="currentColor"
+            transform-origin="center"
+            transform="rotate(90) scale(-1,1)"
+            stroke-dasharray="282.743"
+            stroke-dashoffset="10"
+          />
+        </svg>
+        <div class="timer__text-container">
+          <input class="timer__input" type="number" value="30" min="0" />
+          <button class="timer__start">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="16"
+              width="12"
+              viewBox="0 0 384 512"
+            >
+              <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+              <path
+                d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
+              />
+            </svg>
+          </button>
+          <button class="timer__pause">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="16"
+              width="10"
+              viewBox="0 0 320 512"
+            >
+              <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+              <path
+                d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </body>
