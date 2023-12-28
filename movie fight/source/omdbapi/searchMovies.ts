@@ -1,10 +1,11 @@
-import { get, ApiParameter } from './utils';
+import { get, ApiParameter } from './omdb-utils';
 import { BASE_URL } from './constants';
 import { API_KEY } from './api-key';
 
 export interface SearchResult {
   id: string;
   title: string;
+  year: number;
   posterUrl: string;
 }
 
@@ -14,6 +15,7 @@ const deserializeSearchResult = (result: {
   return {
     id: result.imdbID,
     title: result.Title,
+    year: +result.Year,
     posterUrl: result.Poster,
   };
 };

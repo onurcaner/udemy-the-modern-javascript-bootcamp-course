@@ -14,8 +14,8 @@ export const get = async function <T>(
     if (!response.ok) throw new Error(`Response is NOT OK: ${response.status}`);
 
     const apiData = await response.json();
-    if (apiData.Response !== 'True')
-      throw new Error(`API Data is NOT OK: ${apiData.Response}`);
+    console.log(apiData);
+    if (apiData.Response !== 'True') throw new Error(apiData.Error);
 
     return deserializer(apiData);
   } catch (err) {
