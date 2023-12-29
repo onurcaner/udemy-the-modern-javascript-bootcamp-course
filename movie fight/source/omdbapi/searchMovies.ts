@@ -3,7 +3,7 @@ import { BASE_URL } from './constants';
 import { API_KEY } from './api-key';
 
 export interface SearchResult {
-  id: string;
+  imdbId: string;
   title: string;
   year: number;
   posterUrl: string;
@@ -13,7 +13,7 @@ const deserializeSearchResult = (result: {
   [key: string]: any;
 }): SearchResult => {
   return {
-    id: result.imdbID,
+    imdbId: result.imdbID,
     title: result.Title,
     year: +result.Year,
     posterUrl: result.Poster,
