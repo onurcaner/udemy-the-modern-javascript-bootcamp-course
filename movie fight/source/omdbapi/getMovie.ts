@@ -9,7 +9,6 @@ export interface Movie {
   plot: string;
   posterUrl: string;
   boxOffice: number;
-  rating: number;
   genre: string;
   awards: string;
   metascore: number;
@@ -25,7 +24,6 @@ export const deserializeMovie = (apiData: { [key: string]: any }): Movie => {
     plot: apiData.Plot,
     posterUrl: apiData.Poster,
     boxOffice: +(apiData.BoxOffice as string).slice(1).replaceAll(',', ''),
-    rating: +apiData.imdbRating,
     genre: apiData.Genre,
     awards: apiData.Awards,
     metascore: +apiData.Metascore,
