@@ -1,73 +1,132 @@
-import { Engine, Runner, World, Bodies, Render } from 'matter-js';
-import { width, height } from './config';
+import {
+  Engine,
+  Runner,
+  Composite,
+  Bodies,
+  Render,
+  ICollisionFilter,
+} from 'matter-js';
+import {
+  width,
+  height,
+  backgroundColor,
+  finishColor,
+  startColor,
+  playerColor,
+} from './config';
 import { Grid, Cell } from './Grid';
 import { Wall } from './Wall';
 import { generateRandomInt } from './utils';
 
+// Initialize matter-js
 const engine = Engine.create();
 const runner = Runner.create();
-const world = engine.world;
+const composite = engine.world;
 const render = Render.create({
   engine,
   element: document.body,
   options: {
+    wireframes: false,
     width,
     height,
+    background: backgroundColor,
   },
 });
-
 Render.run(render);
 Runner.run(runner, engine);
 
-const rowsAndColumns: [number, number] = [15, 20];
-const grid = new Grid(...rowsAndColumns);
-const wall = new Wall(...rowsAndColumns);
+// Initialize Grid and Wall models
+const rows = 6;
+const columns = 8;
+const grid = new Grid(rows, columns);
+const wall = new Wall(rows, columns);
 
-const stepThroughCell = (cell: Cell) => {
-  // enter into cell and change it into isVisited
-  cell.isVisited = true;
+const drawWalls = (composite: Composite, wall: Wall): void => {
+  /* Composite.remove(composite, Composite.allBodies(composite)); */
+  Composite.add(composite, wall.createHorizontalWalls());
+  Composite.add(composite, wall.createVerticalWalls());
+  Composite.add(composite, wall.createBorders());
+};
 
-  // check if every cell is visited
-  const isAllVisited = grid
-    .getGrid()
-    .reduce((sum, row) => [...sum, ...row], [])
-    .every((cell) => cell.isVisited);
-  if (isAllVisited) return;
+const generateMaze = (grid: Grid, wall: Wall) => {
+  const visitedCellStack: Cell[] = [];
+  let currentCell = grid.getCell(...grid.getMiddleCoordinates());
 
-  // get neighbour cells and filter them(unvisited)
-  const neighbourCells = grid.getNeighbourCells(cell);
-  const unvisitedNeighbourCells = neighbourCells.filter(
-    (cell) => !cell.isVisited
-  );
+  for (;;) {
+    // visit the cell
+    if (!currentCell) return;
+    currentCell.isVisited = true;
+    visitedCellStack.push(currentCell);
 
-  if (unvisitedNeighbourCells.length) {
-    // pick a random next neighbour cell
-    const random = generateRandomInt(unvisitedNeighbourCells.length - 1);
-    const nextCell = unvisitedNeighbourCells[random];
+    // check if every cell is visited
+    const isAllVisited = grid
+      .getGrid()
+      .reduce((sum, row) => [...sum, ...row], [])
+      .every((cell) => cell.isVisited);
+    if (isAllVisited) return;
 
-    // remove the wall between current and next cell
-    wall.setWallBetween(cell, nextCell, false);
+    // get neighbour cells and filter them(unvisited)
+    const unvisitedNeighbourCells = grid
+      .getNeighbourCells(currentCell)
+      .filter((cell) => !cell.isVisited);
 
-    // stepThroughCell to next
-    stepThroughCell(nextCell);
-  } else {
-    const random = generateRandomInt(neighbourCells.length - 1);
-    const nextCell = neighbourCells[random];
+    if (unvisitedNeighbourCells.length) {
+      // pick a random next neighbour cell
+      const nextCell =
+        unvisitedNeighbourCells[
+          generateRandomInt(unvisitedNeighbourCells.length - 1)
+        ];
 
-    // stepThroughCell to next
-    stepThroughCell(nextCell);
+      // remove the wall between current and next cell
+      wall.setWallBetween(currentCell, nextCell, false);
+
+      currentCell = nextCell;
+    } else {
+      visitedCellStack.pop(); // current cell
+      currentCell = visitedCellStack.pop();
+    }
   }
 };
 
-const startingCell = grid.getCell(0, 0);
-startingCell && stepThroughCell(startingCell);
+generateMaze(grid, wall);
+drawWalls(composite, wall);
 
-/* console.log(grid.getGrid());
-console.log(wall.getHorizontalWalls());
-console.log(wall.getVerticalWalls()); */
+const startBlock = Bodies.rectangle(
+  width / columns / 2,
+  height / rows / 2,
+  width / columns / 2,
+  height / rows / 2,
+  {
+    isStatic: true,
+    render: {
+      fillStyle: startColor,
+    },
+  }
+);
+Composite.add(composite, startBlock);
 
-World.add(world, wall.createHorizontalWalls());
-World.add(world, wall.createVerticalWalls());
-World.add(world, wall.createBorders());
+const finishBlock = Bodies.rectangle(
+  width - width / columns / 2,
+  height - height / rows / 2,
+  width / columns / 2,
+  height / rows / 2,
+  {
+    isStatic: true,
+    render: {
+      fillStyle: finishColor,
+    },
+  }
+);
+Composite.add(composite, finishBlock);
 
-/* World.add(world, createVerticalWalls(wall.getVerticalWalls())); */
+const playerBlock = Bodies.circle(
+  width / columns / 2,
+  height / rows / 2,
+  width / columns / 4,
+  {
+    render: {
+      fillStyle: playerColor,
+    },
+  }
+);
+Composite.add(composite, playerBlock);

@@ -1,7 +1,7 @@
 import { create2dNullArray } from './utils';
 import { Cell } from './Grid';
-import { Bodies, Body } from 'matter-js';
-import { width, height, wallThickness } from './config';
+import { Bodies, Body, IChamferableBodyDefinition } from 'matter-js';
+import { width, height, wallThickness, wallColor } from './config';
 
 enum WallType {
   horizontal = 'horizontal',
@@ -34,7 +34,7 @@ export class Wall {
           ((rowIndex + 1) * height) / this.rows,
           width / this.columns,
           wallThickness,
-          { isStatic: true }
+          this.getWallOptions()
         );
         horizontalWalls.push(wall);
       });
@@ -53,7 +53,7 @@ export class Wall {
           ((rowIndex + 0.5) * height) / this.rows,
           wallThickness,
           height / this.rows,
-          { isStatic: true }
+          this.getWallOptions()
         );
         verticalWalls.push(wall);
       });
@@ -64,19 +64,44 @@ export class Wall {
 
   createBorders(): Body[] {
     return [
-      Bodies.rectangle(width / 2, height * 0, width, wallThickness * 2, {
-        isStatic: true,
-      }), // Top
-      Bodies.rectangle(width / 2, height * 1, width, wallThickness * 2, {
-        isStatic: true,
-      }), //Bottom
-      Bodies.rectangle(width * 0, height / 2, wallThickness * 2, height, {
-        isStatic: true,
-      }), // Left
-      Bodies.rectangle(width * 1, height / 2, wallThickness * 2, height, {
-        isStatic: true,
-      }), // Right
+      Bodies.rectangle(
+        width / 2,
+        height * 0,
+        width,
+        wallThickness * 2,
+        this.getWallOptions()
+      ), // Top
+      Bodies.rectangle(
+        width / 2,
+        height * 1,
+        width,
+        wallThickness * 2,
+        this.getWallOptions()
+      ), //Bottom
+      Bodies.rectangle(
+        width * 0,
+        height / 2,
+        wallThickness * 2,
+        height,
+        this.getWallOptions()
+      ), // Left
+      Bodies.rectangle(
+        width * 1,
+        height / 2,
+        wallThickness * 2,
+        height,
+        this.getWallOptions()
+      ), // Right
     ];
+  }
+
+  private getWallOptions(): IChamferableBodyDefinition {
+    return {
+      isStatic: true,
+      render: {
+        fillStyle: wallColor,
+      },
+    };
   }
 
   private getWallDescriptor(cell: Cell, otherCell: Cell): WallDescriptor {
@@ -92,7 +117,7 @@ export class Wall {
     }
   }
 
-  getWallBetween(cell: Cell, otherCell: Cell): boolean {
+  isWallBetween(cell: Cell, otherCell: Cell): boolean {
     const [wallType, row, column] = this.getWallDescriptor(cell, otherCell);
     if (wallType === WallType.horizontal) {
       return this.horizontalWalls[row][column];

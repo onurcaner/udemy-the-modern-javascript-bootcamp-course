@@ -12,7 +12,11 @@ export class Grid {
     private rows: number,
     private columns: number
   ) {
-    this.grid = this.createGrid(this.rows, this.columns);
+    this.grid = this.initializeGrid(this.rows, this.columns);
+  }
+
+  getMiddleCoordinates(): [number, number] {
+    return [Math.floor(this.rows / 2), Math.floor(this.columns / 2)];
   }
 
   getGrid(): Cell[][] {
@@ -41,7 +45,7 @@ export class Grid {
     return neighbourCells;
   }
 
-  private createGrid(rows: number, columns: number): Cell[][] {
+  private initializeGrid(rows: number, columns: number): Cell[][] {
     return create2dNullArray(rows, columns).map((row, rowIndex): Cell[] => {
       return row.map((_cell, columnIndex): Cell => {
         return {
