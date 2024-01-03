@@ -1,11 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maze Game</title>
 
+    <link rel="stylesheet" href="./source/style.scss" />
     <script type="module" src="./source/index.ts"></script>
   </head>
-  <body></body>
+  <body>
+    <div class="game"></div>
+    <div class="text-container">
+      <form class="setting">
+        <label for="rows">Rows:</label>
+        <input id="rows" type="number" min="2" value="6" />
+      </form>
+      <form class="setting">
+        <label for="columns">Columns:</label>
+        <input id="columns" type="number" min="2" value="8" />
+      </form>
+      <p class="score-container">
+        <span>Score</span>
+        <span class="score">0</span>
+      </p>
+    </div>
+  </body>
 </html>

@@ -3,9 +3,10 @@ import { Cell } from './Grid';
 import { Bodies, Body, IChamferableBodyDefinition } from 'matter-js';
 import { width, height, wallThickness, wallColor } from './config';
 
-enum WallType {
+export enum WallType {
   horizontal = 'horizontal',
   vertical = 'vertical',
+  border = 'border',
 }
 
 type WallDescriptor = [WallType, number, number];
@@ -34,7 +35,7 @@ export class Wall {
           ((rowIndex + 1) * height) / this.rows,
           width / this.columns,
           wallThickness,
-          this.getWallOptions()
+          this.getWallOptions(WallType.horizontal)
         );
         horizontalWalls.push(wall);
       });
@@ -53,7 +54,7 @@ export class Wall {
           ((rowIndex + 0.5) * height) / this.rows,
           wallThickness,
           height / this.rows,
-          this.getWallOptions()
+          this.getWallOptions(WallType.vertical)
         );
         verticalWalls.push(wall);
       });
@@ -69,34 +70,35 @@ export class Wall {
         height * 0,
         width,
         wallThickness * 2,
-        this.getWallOptions()
+        this.getWallOptions(WallType.border)
       ), // Top
       Bodies.rectangle(
         width / 2,
         height * 1,
         width,
         wallThickness * 2,
-        this.getWallOptions()
+        this.getWallOptions(WallType.border)
       ), //Bottom
       Bodies.rectangle(
         width * 0,
         height / 2,
         wallThickness * 2,
         height,
-        this.getWallOptions()
+        this.getWallOptions(WallType.border)
       ), // Left
       Bodies.rectangle(
         width * 1,
         height / 2,
         wallThickness * 2,
         height,
-        this.getWallOptions()
+        this.getWallOptions(WallType.border)
       ), // Right
     ];
   }
 
-  private getWallOptions(): IChamferableBodyDefinition {
+  private getWallOptions(label: WallType): IChamferableBodyDefinition {
     return {
+      label,
       isStatic: true,
       render: {
         fillStyle: wallColor,

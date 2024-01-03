@@ -1,6 +1,6 @@
-export const width = 1000;
-export const height = 750;
-export const wallThickness = 2;
+export const width = (window.innerHeight * 4) / 3;
+export const height = window.innerHeight;
+export const wallThickness = 4;
 export const backgroundColor = '#e5e5e5';
 export const wallColor = '#262626';
 export const startColor = '#84cc16';

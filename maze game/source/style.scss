@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  font-family: monospace;
+  color: #262626;
+  background-color: #fafafa;
+}
+
+.game {
+  width: 75%;
+}
+
+.text-container {
+  width: 25%;
+  margin-top: 4rem;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .setting {
+    font-size: 2rem;
+
+    label,
+    input {
+      display: block;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      width: 100%;
+    }
+  }
+
+  .score-container {
+    margin-top: 4rem;
+    font-size: 4rem;
+
+    span {
+      display: block;
+    }
+  }
+}
