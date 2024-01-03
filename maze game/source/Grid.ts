@@ -15,12 +15,12 @@ export class Grid {
     this.grid = this.initializeGrid(this.rows, this.columns);
   }
 
-  getMiddleCoordinates(): [number, number] {
-    return [Math.floor(this.rows / 2), Math.floor(this.columns / 2)];
-  }
-
   getGrid(): Cell[][] {
     return this.grid;
+  }
+
+  getMiddleCoordinates(): [number, number] {
+    return [Math.floor(this.rows / 2), Math.floor(this.columns / 2)];
   }
 
   getCell(row: number, column: number): Cell | undefined {

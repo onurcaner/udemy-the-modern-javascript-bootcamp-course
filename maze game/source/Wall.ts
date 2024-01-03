@@ -1,7 +1,5 @@
 import { create2dNullArray } from './utils';
 import { Cell } from './Grid';
-import { Bodies, Body, IChamferableBodyDefinition } from 'matter-js';
-import { width, height, wallThickness, wallColor } from './config';
 
 export enum WallType {
   horizontal = 'horizontal',
@@ -25,85 +23,12 @@ export class Wall {
     );
   }
 
-  createHorizontalWalls(): Body[] {
-    const horizontalWalls: Body[] = [];
-    this.horizontalWalls.forEach((wallRows, rowIndex) => {
-      wallRows.forEach((isWall, columnIndex) => {
-        if (!isWall) return;
-        const wall = Bodies.rectangle(
-          ((columnIndex + 0.5) * width) / this.columns,
-          ((rowIndex + 1) * height) / this.rows,
-          width / this.columns,
-          wallThickness,
-          this.getWallOptions(WallType.horizontal)
-        );
-        horizontalWalls.push(wall);
-      });
-    });
-
-    return horizontalWalls;
+  getHorizontalWalls(): boolean[][] {
+    return this.horizontalWalls;
   }
 
-  createVerticalWalls = (): Body[] => {
-    const verticalWalls: Body[] = [];
-    this.verticalWalls.forEach((wallRows, rowIndex) => {
-      wallRows.forEach((isWall, columnIndex) => {
-        if (!isWall) return;
-        const wall = Bodies.rectangle(
-          ((columnIndex + 1) * width) / this.columns,
-          ((rowIndex + 0.5) * height) / this.rows,
-          wallThickness,
-          height / this.rows,
-          this.getWallOptions(WallType.vertical)
-        );
-        verticalWalls.push(wall);
-      });
-    });
-
-    return verticalWalls;
-  };
-
-  createBorders(): Body[] {
-    return [
-      Bodies.rectangle(
-        width / 2,
-        height * 0,
-        width,
-        wallThickness * 2,
-        this.getWallOptions(WallType.border)
-      ), // Top
-      Bodies.rectangle(
-        width / 2,
-        height * 1,
-        width,
-        wallThickness * 2,
-        this.getWallOptions(WallType.border)
-      ), //Bottom
-      Bodies.rectangle(
-        width * 0,
-        height / 2,
-        wallThickness * 2,
-        height,
-        this.getWallOptions(WallType.border)
-      ), // Left
-      Bodies.rectangle(
-        width * 1,
-        height / 2,
-        wallThickness * 2,
-        height,
-        this.getWallOptions(WallType.border)
-      ), // Right
-    ];
-  }
-
-  private getWallOptions(label: WallType): IChamferableBodyDefinition {
-    return {
-      label,
-      isStatic: true,
-      render: {
-        fillStyle: wallColor,
-      },
-    };
+  getVerticalWalls(): boolean[][] {
+    return this.verticalWalls;
   }
 
   private getWallDescriptor(cell: Cell, otherCell: Cell): WallDescriptor {
