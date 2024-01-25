@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "email": "asd",
+    "password": "36f6cc9e1c1dd77c105c202930eabe77ad0123a5d226e73c14ff6573426143687fd062143ed2c087ddefc9359a89384fb7d96fe66e1652374d866ed6145fa89ah8d982293bcb98332b9af0a62cf7678fb",
+    "isAdmin": true,
+    "id": 1
+  },
+  {
+    "email": "asdf",
+    "password": "ae8824127c1bdcbf8df0d5e15c55442b243549a26427f0dc765348507f7a0585419e055c2febe97623e0ea788007f1a2802fdf9551090fdfca1ede4ffde68bc3hc9b7cbe3c8fb0a278c055ab273b2ddfd",
+    "isAdmin": false,
+    "id": 2
+  },
+  {
+    "email": "@gggggggggg",
+    "password": "e49cad9686d3471e076c7e5fb14adce2e821de4b5f8bf9e0fe5c0c6a21b90e5d982ab278de61fd830959266bba56e8eec06ae52a3164167c0955301d8aa5e8d1h7dd1bf11317fab0d6078f5c4c945213e",
+    "isAdmin": false,
+    "id": 3
+  }
+]
