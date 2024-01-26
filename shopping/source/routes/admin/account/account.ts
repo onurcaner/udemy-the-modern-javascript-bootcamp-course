@@ -2,7 +2,7 @@ import express from 'express';
 import { Request } from 'express-validator/src/base';
 import { validationResult } from 'express-validator';
 
-import { validationChains, UserForm } from './validators';
+import { accountValidationChains, UserForm } from './validators';
 
 import {
   UserAttributes,
@@ -11,7 +11,15 @@ import {
 
 import { viewFormToSignUpUser } from '../../../views/admin/viewFormToSignUpUser';
 import { viewFormToSignInUser } from '../../../views/admin/viewFormToSignInUser';
-import { viewLayout } from '../../../views/viewLayout';
+import { viewAdminLayout } from '../../../views/viewAdminLayout';
+import { viewAdminResponse } from '../../../views/admin/viewAdminResponse';
+import {
+  pathAdminAccount,
+  pathAdminAccountSignIn,
+  pathAdminAccountSignOut,
+  pathAdminAccountSignUp,
+} from '../../pagePaths';
+import { viewAdmin } from '../../../views/admin/viewAdmin';
 
 const router = express.Router();
 export const accountRouter = router;
@@ -24,39 +32,31 @@ export interface Session {
 //
 //
 // Account Page
-router.get('/admin/account', (request, response): void => {
+router.get(pathAdminAccount, (request, response): void => {
   const session = request.session as
     | (typeof request.session & Session)
     | null
     | undefined;
-  const content = session?.user
-    ? `
-    <p>You are signed in with ID: ${session.user.id}</p>
-    <a href="./account/sign-out">Sign Out</a>
-  `
-    : `
-    <p>You are not signed in</p>
-    <a href="./account/sign-in">Sign In</a>
-    <a href="./account/sign-up">Sign Up</a>
-  `;
-  response.send(viewLayout({ content, title: 'admin/account' }));
+  const content = viewAdmin(session?.user);
+  const title = 'Admin Account';
+  response.send(viewAdminLayout({ content, title }));
 });
 
 // Sign Up
-router.get('/admin/account/sign-up', (request, response): void => {
-  const title = request.path;
+router.get(pathAdminAccountSignUp, (request, response): void => {
+  const title = 'Sign Up';
   const content = viewFormToSignUpUser();
-  response.send(viewLayout({ content, title }));
+  response.send(viewAdminLayout({ content, title }));
 });
 
 router.post(
-  '/admin/account/sign-up',
-  validationChains.requireSignUpEmail(),
-  validationChains.requireSignUpPassword(),
-  validationChains.requireSignUpPassWordConfirmation(),
+  pathAdminAccountSignUp,
+  accountValidationChains.requireSignUpEmail(),
+  accountValidationChains.requireSignUpPassword(),
+  accountValidationChains.requireSignUpPassWordConfirmation(),
   /* TODO */
   (request, response): void => {
-    const title = request.path;
+    const title = 'Sign Up';
     const errors = validationResult(request);
     const session = request.session as
       | (typeof request.session & Session)
@@ -65,7 +65,7 @@ router.post(
 
     if (!errors.isEmpty()) {
       const content = viewFormToSignUpUser(errors);
-      response.send(viewLayout({ content, title }));
+      response.send(viewAdminLayout({ content, title }));
       return;
     }
 
@@ -73,29 +73,32 @@ router.post(
       .then((user) => {
         if (session) session.user = user;
         response.send(
-          viewLayout({ title, content: `Account created for ${user.email}` })
+          viewAdminLayout({
+            title,
+            content: viewAdminResponse(`Account created for ${user.email}`),
+          })
         );
       })
       .catch((err) => {
         if (err instanceof Error)
-          response.send(viewLayout({ title, content: err.message }));
+          response.send(viewAdminLayout({ title, content: err.message }));
       });
   }
 );
 
 // Sign In
-router.get('/admin/account/sign-in', (request, response): void => {
-  const title = request.path;
+router.get(pathAdminAccountSignIn, (request, response): void => {
+  const title = 'Sign In';
   const content = viewFormToSignInUser();
-  response.send(viewLayout({ content, title }));
+  response.send(viewAdminLayout({ content, title }));
 });
 
 router.post(
-  '/admin/account/sign-in',
-  validationChains.requireSignInEmail(),
-  validationChains.requireSignInPassword(),
+  pathAdminAccountSignIn,
+  accountValidationChains.requireSignInEmail(),
+  accountValidationChains.requireSignInPassword(),
   (request, response): void => {
-    const title = request.path;
+    const title = 'Sign In';
     const errors = validationResult(request);
     const session = request.session as
       | (typeof request.session & Session)
@@ -104,27 +107,36 @@ router.post(
 
     if (!errors.isEmpty()) {
       const content = viewFormToSignInUser(errors);
-      response.send(viewLayout({ content, title }));
+      response.send(viewAdminLayout({ content, title }));
       return;
     }
 
     signIn(request)
       .then((user) => {
         if (session) session.user = user;
-        response.send(viewLayout({ title, content: 'Successfully signed in' }));
+        response.send(
+          viewAdminLayout({
+            title,
+            content: viewAdminResponse('Successfully signed in'),
+          })
+        );
       })
       .catch((err) => {
         if (err instanceof Error)
-          response.send(viewLayout({ title, content: err.message }));
+          response.send(
+            viewAdminLayout({ title, content: viewAdminResponse(err.message) })
+          );
       });
   }
 );
 
 // Sign Out
-router.get('/admin/account/sign-out', (request, response): void => {
-  const title = request.path;
+router.get(pathAdminAccountSignOut, (request, response): void => {
+  const title = 'Sign Out';
   request.session = null;
-  response.send(viewLayout({ title, content: 'You are signed out' }));
+  response.send(
+    viewAdminLayout({ title, content: viewAdminResponse('You are signed out') })
+  );
 });
 
 //

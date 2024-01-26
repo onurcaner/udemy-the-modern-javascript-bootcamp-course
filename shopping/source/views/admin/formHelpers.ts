@@ -1,4 +1,3 @@
-import { UserFormKeys } from '../../routes/admin/account/validators';
 import {
   FieldValidationError,
   Result,
@@ -7,10 +6,10 @@ import {
 
 export const getFormError = (
   errors: Result<ValidationError> | undefined,
-  userFormKey: UserFormKeys
+  formKey: string
 ): FieldValidationError | null => {
   if (!errors) return null;
-  const error = errors.mapped()[userFormKey] as ValidationError | undefined;
+  const error = errors.mapped()[formKey] as ValidationError | undefined;
   if (!error) return null;
   if (error.type === 'field') return error;
   throw new Error();
@@ -35,15 +34,16 @@ export const createInputFieldHtml = ({
 }: CreateFormFieldHtmlProperties): string => {
   /* value="${value ?? error?.value ?? ''}" */
   return `
-    <div>
-      <label>${label}</label>
+    <div class="field">
+      <label class="label">${label}</label>
       <input
+        class="input"
         name="${name}"
         value="${value}"
         placeholder="${placeholder}"
         type="${type}"
       />
-      ${error ? `<span>${error.msg}</span>` : ''}
+      ${error ? `<p class="help is-danger">${error.msg}</p>` : ''}
     </div>
   `;
 };

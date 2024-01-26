@@ -5,6 +5,7 @@ import { adminRouters } from './routes/admin/admin';
 
 const app = express();
 app.use(
+  express.static('public'),
   urlencoded({ extended: true }),
   cookieSession({
     keys: ['K5JF8DW8932J0OC4VV09DA12GF7IK8A02'],

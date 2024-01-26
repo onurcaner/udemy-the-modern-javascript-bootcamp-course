@@ -1,9 +1,10 @@
-interface Layout {
-  content: string;
+export interface Layout {
   title?: string;
+  content?: string;
+  body?: string;
 }
 
-export const viewLayout = ({ content, title }: Layout): string => {
+export const viewLayout = ({ body, title }: Layout): string => {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -15,12 +16,13 @@ export const viewLayout = ({ content, title }: Layout): string => {
           ? `
           <title>${title}</title>
         `
-          : ''
+          : 'Shopping'
       }
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"></link>
+      <link href="/css/common.css" rel="stylesheet" type="text/css">
     </head>
-    <body>
-      ${content}
-    </body>
+    ${body}
   </html>
   `;
 };

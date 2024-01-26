@@ -9,7 +9,6 @@ import { randomBytes, scrypt } from 'node:crypto';
 import { promisify } from 'util';
 
 export interface UserAttributes extends Attributes {
-  id: number;
   email: string;
   password: string;
   isAdmin: boolean;

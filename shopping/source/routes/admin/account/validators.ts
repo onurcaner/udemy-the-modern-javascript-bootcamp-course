@@ -62,7 +62,7 @@ const checkIfPasswordIsCorrect: CustomValidator = async (
   else throw new Error('Incorrect password');
 };
 
-export const validationChains = {
+export const accountValidationChains = {
   requireSignUpEmail: () =>
     body(UserFormKeys.email)
       .trim()
