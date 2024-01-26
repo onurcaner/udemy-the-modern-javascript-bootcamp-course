@@ -1,7 +1,14 @@
 import express from 'express';
+import { Request } from 'express-validator/src/base';
 import { validationResult } from 'express-validator';
+
 import { validationChains, UserForm } from './validators';
-import { usersRepository } from '../../../repositories/UsersRepository';
+
+import {
+  UserAttributes,
+  usersRepository,
+} from '../../../repositories/UsersRepository';
+
 import { viewFormToSignUpUser } from '../../../views/admin/viewFormToSignUpUser';
 import { viewFormToSignInUser } from '../../../views/admin/viewFormToSignInUser';
 import { viewLayout } from '../../../views/viewLayout';
@@ -9,15 +16,22 @@ import { viewLayout } from '../../../views/viewLayout';
 const router = express.Router();
 export const accountRouter = router;
 
+export interface Session {
+  user?: UserAttributes;
+}
+
 //
 //
 //
 // Account Page
 router.get('/admin/account', (request, response): void => {
-  const isSignedIn = request.session?.userId as number | null;
-  const content = isSignedIn
+  const session = request.session as
+    | (typeof request.session & Session)
+    | null
+    | undefined;
+  const content = session?.user
     ? `
-    <p>You are signed in with ID: ${request.session?.userId}</p>
+    <p>You are signed in with ID: ${session.user.id}</p>
     <a href="./account/sign-out">Sign Out</a>
   `
     : `
@@ -30,87 +44,107 @@ router.get('/admin/account', (request, response): void => {
 
 // Sign Up
 router.get('/admin/account/sign-up', (request, response): void => {
-  response.send(
-    viewLayout({ content: viewFormToSignUpUser(), title: 'admin/sign-up' })
-  );
+  const title = request.path;
+  const content = viewFormToSignUpUser();
+  response.send(viewLayout({ content, title }));
 });
 
 router.post(
   '/admin/account/sign-up',
-  validationChains.requireEmail,
-  validationChains.requirePassword,
-  validationChains.requirePassWordConfirmation,
+  validationChains.requireSignUpEmail(),
+  validationChains.requireSignUpPassword(),
+  validationChains.requireSignUpPassWordConfirmation(),
+  /* TODO */
   (request, response): void => {
+    const title = request.path;
     const errors = validationResult(request);
-    console.log(errors);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    createUser(request, response);
+    const session = request.session as
+      | (typeof request.session & Session)
+      | null
+      | undefined;
+
+    if (!errors.isEmpty()) {
+      const content = viewFormToSignUpUser(errors);
+      response.send(viewLayout({ content, title }));
+      return;
+    }
+
+    createUser(request)
+      .then((user) => {
+        if (session) session.user = user;
+        response.send(
+          viewLayout({ title, content: `Account created for ${user.email}` })
+        );
+      })
+      .catch((err) => {
+        if (err instanceof Error)
+          response.send(viewLayout({ title, content: err.message }));
+      });
   }
 );
 
 // Sign In
 router.get('/admin/account/sign-in', (request, response): void => {
-  response.send(viewFormToSignInUser());
+  const title = request.path;
+  const content = viewFormToSignInUser();
+  response.send(viewLayout({ content, title }));
 });
 
-router.post('/admin/account/sign-in', (request, response): void => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  checkAndSignIn(request, response);
-});
+router.post(
+  '/admin/account/sign-in',
+  validationChains.requireSignInEmail(),
+  validationChains.requireSignInPassword(),
+  (request, response): void => {
+    const title = request.path;
+    const errors = validationResult(request);
+    const session = request.session as
+      | (typeof request.session & Session)
+      | null
+      | undefined;
+
+    if (!errors.isEmpty()) {
+      const content = viewFormToSignInUser(errors);
+      response.send(viewLayout({ content, title }));
+      return;
+    }
+
+    signIn(request)
+      .then((user) => {
+        if (session) session.user = user;
+        response.send(viewLayout({ title, content: 'Successfully signed in' }));
+      })
+      .catch((err) => {
+        if (err instanceof Error)
+          response.send(viewLayout({ title, content: err.message }));
+      });
+  }
+);
 
 // Sign Out
 router.get('/admin/account/sign-out', (request, response): void => {
-  signOut(request, response);
+  const title = request.path;
+  request.session = null;
+  response.send(viewLayout({ title, content: 'You are signed out' }));
 });
 
 //
-const createUser = async (request, response: Response): Promise<void> => {
-  try {
-    const { email, password, isAdmin } = body as UserForm;
-    const newUser = await usersRepository.create({
-      email,
-      password,
-      isAdmin: Boolean(isAdmin),
-    });
-    await usersRepository.saltPassword(newUser.id);
-    if (request.session) request.session.userId = newUser.id;
-    response.send(viewLayout({ content: `Account created for ${email}` }));
-  } catch (err) {
-    if (err instanceof Error)
-      response.send(viewLayout({ content: err.message }));
-  }
+const createUser = async (
+  request: Request & Express.Request
+): Promise<UserAttributes> => {
+  const { email, password, isAdmin } = request.body as UserForm;
+  const newUser = await usersRepository.create({
+    email,
+    password,
+    isAdmin: Boolean(isAdmin),
+  });
+  await usersRepository.saltPassword(newUser.id);
+  return newUser;
 };
 
-const checkAndSignIn = async (
-  request: Express.Request,
-  response: Express.Response
-): Promise<void> => {
-  try {
-    const { email, password } = request.body as Partial<UserForm>;
-
-    if (!email || !password)
-      throw new Error('ERROR: Some form fields are empty');
-
-    const users = await usersRepository.filter({ email });
-    if (!users.length)
-      throw new Error(`ERROR: No account with provided e-mail: ${email}`);
-
-    const [user] = users;
-    if (!(await usersRepository.isValidPassword(user, password)))
-      throw new Error(`ERROR: Invalid password`);
-
-    if (request.session) request.session.userId = user.id;
-    response.send(viewLayout({ content: 'Successfully signed in' }));
-  } catch (err) {
-    if (err instanceof Error)
-      response.send(viewLayout({ content: err.message }));
-  }
-};
-
-const signOut = (
-  request: Express.Request,
-  response: Express.Response
-): void => {
-  request.session = null;
-  response.send(viewLayout({ content: 'You are signed out' }));
+const signIn = async (
+  request: Request & Express.Request
+): Promise<UserAttributes> => {
+  const { email } = request.body as Partial<UserForm>;
+  const [user] = await usersRepository.filter({ email });
+  return user;
 };

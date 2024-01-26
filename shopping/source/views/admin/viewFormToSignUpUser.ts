@@ -1,20 +1,33 @@
-import { UserFormKeys } from '../../routes/admin/account/account';
+import { UserFormKeys } from '../../routes/admin/account/validators';
+import { Result, ValidationError } from 'express-validator';
+import { getFormError, createInputFieldHtml } from './helpers';
 
-export const viewFormToSignUpUser = (): string => {
+export const viewFormToSignUpUser = (
+  errors?: Result<ValidationError>
+): string => {
   return `
     <form method="POST">
-      <div>
-        <label>E-mail</label>
-        <input name="${UserFormKeys.email}" placeholder="john@gmail.com" />
-      </div>
-      <div>
-        <label>Password</label>
-        <input name="${UserFormKeys.password}" placeholder="*****" />
-      </div>
-      <div>
-        <label>Confirm Password</label>
-        <input name="${UserFormKeys.passwordConfirmation}" placeholder="*****" />
-      </div>
+      ${createInputFieldHtml({
+        label: 'E-mail',
+        error: getFormError(errors, UserFormKeys.email),
+        name: UserFormKeys.email,
+        placeholder: 'john@gmail.com',
+      })}
+
+      ${createInputFieldHtml({
+        label: 'Password',
+        error: getFormError(errors, UserFormKeys.password),
+        name: UserFormKeys.password,
+        placeholder: '********',
+      })}
+
+      ${createInputFieldHtml({
+        label: 'Confirm Password',
+        error: getFormError(errors, UserFormKeys.passwordConfirmation),
+        name: UserFormKeys.passwordConfirmation,
+        placeholder: '********',
+      })}
+
       <div>
         <label>Is Admin?</label>
         <input name="${UserFormKeys.isAdmin}" type="checkbox" />

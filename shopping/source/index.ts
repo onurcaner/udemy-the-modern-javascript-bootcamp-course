@@ -8,7 +8,11 @@ app.use(
   urlencoded({ extended: true }),
   cookieSession({
     keys: ['K5JF8DW8932J0OC4VV09DA12GF7IK8A02'],
-  })
+  }),
+  (request, _response, next) => {
+    console.log('>>', request.method, request.path);
+    next();
+  }
 );
 
 app.use(...[...adminRouters]);

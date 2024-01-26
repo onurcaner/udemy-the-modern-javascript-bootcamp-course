@@ -39,7 +39,6 @@ class UsersRepository extends Repository<UserAttributes> {
     password: string
   ): Promise<boolean> {
     const [hashedPassword, salt] = user.password.split(HASH_AND_SALT_SEPARATOR);
-    console.log(hashedPassword, salt);
     const promisifiedScrypt = promisify(scrypt);
     const buffer = (await promisifiedScrypt(
       password,
