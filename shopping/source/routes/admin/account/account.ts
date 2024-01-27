@@ -43,7 +43,7 @@ router.get(pathAdminAccount, (request, response): void => {
 });
 
 // Sign Up
-router.get(pathAdminAccountSignUp, (request, response): void => {
+router.get(pathAdminAccountSignUp, (_request, response): void => {
   const title = 'Sign Up';
   const content = viewFormToSignUpUser();
   response.send(viewAdminLayout({ content, title }));
@@ -54,21 +54,22 @@ router.post(
   accountValidationChains.requireSignUpEmail(),
   accountValidationChains.requireSignUpPassword(),
   accountValidationChains.requireSignUpPassWordConfirmation(),
-  /* TODO */
-  (request, response): void => {
-    const title = 'Sign Up';
+  (request, response, next): void => {
     const errors = validationResult(request);
-    const session = request.session as
-      | (typeof request.session & Session)
-      | null
-      | undefined;
-
     if (!errors.isEmpty()) {
+      const title = 'Sign Up';
       const content = viewFormToSignUpUser(errors);
       response.send(viewAdminLayout({ content, title }));
       return;
     }
-
+    next();
+  },
+  (request, response): void => {
+    const title = 'Sign Up';
+    const session = request.session as
+      | (typeof request.session & Session)
+      | null
+      | undefined;
     createUser(request)
       .then((user) => {
         if (session) session.user = user;
@@ -97,19 +98,22 @@ router.post(
   pathAdminAccountSignIn,
   accountValidationChains.requireSignInEmail(),
   accountValidationChains.requireSignInPassword(),
-  (request, response): void => {
-    const title = 'Sign In';
+  (request, response, next): void => {
     const errors = validationResult(request);
-    const session = request.session as
-      | (typeof request.session & Session)
-      | null
-      | undefined;
-
     if (!errors.isEmpty()) {
+      const title = 'Sign In';
       const content = viewFormToSignInUser(errors);
       response.send(viewAdminLayout({ content, title }));
       return;
     }
+    next();
+  },
+  (request, response): void => {
+    const title = 'Sign In';
+    const session = request.session as
+      | (typeof request.session & Session)
+      | null
+      | undefined;
 
     signIn(request)
       .then((user) => {
@@ -143,7 +147,9 @@ router.get(pathAdminAccountSignOut, (request, response): void => {
 const createUser = async (
   request: Request & Express.Request
 ): Promise<UserAttributes> => {
-  const { email, password, isAdmin } = request.body as UserForm;
+  const { email, password, isAdmin } = request.body as
+    | UserForm
+    | UserAttributes;
   const newUser = await usersRepository.create({
     email,
     password,
@@ -156,7 +162,7 @@ const createUser = async (
 const signIn = async (
   request: Request & Express.Request
 ): Promise<UserAttributes> => {
-  const { email } = request.body as Partial<UserForm>;
+  const { email } = request.body as Partial<UserForm> | Partial<UserAttributes>;
   const [user] = await usersRepository.filter({ email });
   return user;
 };

@@ -2,7 +2,12 @@ import { ValidationError, Result } from 'express-validator';
 
 import { ProductFormKeys } from '../../routes/admin/products/validators';
 
-import { getFormError, createInputFieldHtml } from './formHelpers';
+import {
+  getFormError,
+  createInputTextHtml,
+  createInputUploadHtml,
+} from './formHelpers';
+import { pathAdminProductsNew } from '../../routes/pagePaths';
 
 export const viewFormToCreateProduct = (
   errors?: Result<ValidationError>
@@ -11,16 +16,20 @@ export const viewFormToCreateProduct = (
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-one-quarter">
-          <form method="POST">
+          <form
+            method="POST"
+            action="${pathAdminProductsNew}"
+            enctype="multipart/form-data"
+          >
             <h1 class="title">Create a new product</h1>
-            ${createInputFieldHtml({
-              label: 'Name',
-              error: getFormError(errors, ProductFormKeys.name),
-              name: ProductFormKeys.name,
+            ${createInputTextHtml({
+              label: 'Title',
+              error: getFormError(errors, ProductFormKeys.title),
+              name: ProductFormKeys.title,
               placeholder: 'Television',
             })}
 
-            ${createInputFieldHtml({
+            ${createInputTextHtml({
               label: 'Price',
               error: getFormError(errors, ProductFormKeys.price),
               name: ProductFormKeys.price,
@@ -28,24 +37,12 @@ export const viewFormToCreateProduct = (
               type: 'number',
             })}
 
-            <div class="field">
-              <div class="file">
-                <label class="file-label">
-                  <input class="file-input" type="file" name="${
-                    ProductFormKeys.image
-                  }">
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Choose an image
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div>
-
+            ${createInputUploadHtml({
+              label: 'Image',
+              name: ProductFormKeys.image,
+              error: getFormError(errors, ProductFormKeys.image),
+            })}
+            
             <button class="button is-primary">Create</button>
           </form>
         </div>

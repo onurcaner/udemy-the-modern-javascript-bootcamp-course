@@ -4,7 +4,6 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 export interface Attributes {
   id: number;
-  [key: string]: unknown;
 }
 
 export class Repository<T extends Attributes> {
@@ -30,8 +29,8 @@ export class Repository<T extends Attributes> {
     return records.find((record) => record.id === id);
   }
 
-  async filter(attributes: Partial<T>): Promise<T[]> {
-    let records = await this.getAll();
+  async filter(attributes: Partial<T> & Record<string, unknown>): Promise<T[]> {
+    let records = (await this.getAll()) as (T & Record<string, unknown>)[];
     Object.keys(attributes).forEach((key) => {
       records = records.filter((record) => record[key] === attributes[key]);
     });

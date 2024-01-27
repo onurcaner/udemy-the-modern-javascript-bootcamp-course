@@ -1,8 +1,11 @@
 import { Result, ValidationError } from 'express-validator';
 
 import { UserFormKeys } from '../../routes/admin/account/validators';
-import { getFormError, createInputFieldHtml } from './formHelpers';
-import { pathAdminAccountSignUp } from '../../routes/pagePaths';
+import { getFormError, createInputTextHtml } from './formHelpers';
+import {
+  pathAdminAccountSignIn,
+  pathAdminAccountSignUp,
+} from '../../routes/pagePaths';
 
 export const viewFormToSignInUser = (
   errors?: Result<ValidationError>
@@ -11,16 +14,16 @@ export const viewFormToSignInUser = (
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-one-quarter">
-          <form method="POST">
+          <form method="POST" action="${pathAdminAccountSignIn}">
             <h1 class="title">Sign in</h1>
-            ${createInputFieldHtml({
+            ${createInputTextHtml({
               label: 'E-mail',
               error: getFormError(errors, UserFormKeys.email),
               name: UserFormKeys.email,
               placeholder: 'john@gmail.com',
             })}
             
-            ${createInputFieldHtml({
+            ${createInputTextHtml({
               label: 'Password',
               error: getFormError(errors, UserFormKeys.password),
               name: UserFormKeys.password,

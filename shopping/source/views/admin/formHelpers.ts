@@ -15,24 +15,27 @@ export const getFormError = (
   throw new Error();
 };
 
-interface CreateFormFieldHtmlProperties {
+interface CreateInputFieldHtmlProperties {
   label: string;
   name: string;
-  placeholder?: string;
-  value?: string;
-  type?: string;
   error: FieldValidationError | null;
 }
 
-export const createInputFieldHtml = ({
+interface CreateInputUploadHtmlProperties
+  extends CreateInputFieldHtmlProperties {
+  placeholder?: string;
+  value?: string;
+  type?: string;
+}
+
+export const createInputTextHtml = ({
   label,
   name,
   value = '',
   placeholder = '',
   type = 'text',
   error = null,
-}: CreateFormFieldHtmlProperties): string => {
-  /* value="${value ?? error?.value ?? ''}" */
+}: CreateInputUploadHtmlProperties): string => {
   return `
     <div class="field">
       <label class="label">${label}</label>
@@ -43,6 +46,22 @@ export const createInputFieldHtml = ({
         placeholder="${placeholder}"
         type="${type}"
       />
+      ${error ? `<p class="help is-danger">${error.msg}</p>` : ''}
+    </div>
+  `;
+};
+
+export const createInputUploadHtml = ({
+  label,
+  name,
+  error = null,
+}: CreateInputFieldHtmlProperties): string => {
+  return `
+    <div class="field">
+      <label class="label">${label}</label>
+      <div class="file">
+        <input class="file-cta" type="file" name="${name}">
+      </div>
       ${error ? `<p class="help is-danger">${error.msg}</p>` : ''}
     </div>
   `;

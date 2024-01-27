@@ -1,4 +1,5 @@
 import { body, CustomValidator } from 'express-validator';
+
 import {
   UserAttributes,
   usersRepository,
