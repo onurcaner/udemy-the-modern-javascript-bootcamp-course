@@ -17,9 +17,9 @@ export interface UserAttributes extends Attributes {
 }
 
 class UsersRepository extends Repository<UserAttributes> {
-  async saltPassword(id: number): Promise<void> {
+  async saltPassword(id: number): Promise<UserAttributes> {
     const user = await this.getById(id);
-    if (!user) return;
+    if (!user) throw new Error(`No user is found with id: ${id}`);
     const salt = randomBytes(SALT_BYTE_SIZE).toString('hex');
     const promisifiedScrypt = promisify(scrypt);
     const buffer = (await promisifiedScrypt(
@@ -33,6 +33,8 @@ class UsersRepository extends Repository<UserAttributes> {
       ...user,
       password: hashedPassword + HASH_AND_SALT_SEPARATOR + salt,
     });
+
+    return user;
   }
 
   async isValidPassword(

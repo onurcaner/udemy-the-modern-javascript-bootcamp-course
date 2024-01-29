@@ -1,5 +1,4 @@
 import express from 'express';
-import { Request } from 'express-validator/src/base';
 import { validationResult } from 'express-validator';
 
 import { accountFormValidationChains, UserForm } from './formValidators';
@@ -67,6 +66,7 @@ router.post(
   accountFormValidationChains.requireSignUpEmail(),
   accountFormValidationChains.requireSignUpPassword(),
   accountFormValidationChains.requireSignUpPassWordConfirmation(),
+
   (request, response, next): void => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
@@ -77,14 +77,22 @@ router.post(
     }
     next();
   },
+
   (request, response): void => {
     const title = 'Sign Up';
     const session = request.session as
       | (typeof request.session & UserSession)
       | null
       | undefined;
+    const { email, password, isAdmin } = request.body as
+      | UserForm
+      | UserAttributes;
 
-    createUser(request)
+    usersRepository
+      .create({ email, password, isAdmin })
+      .then((user) => {
+        return usersRepository.saltPassword(user.id);
+      })
       .then((user) => {
         if (session) session.user = user;
         if (user.isAdmin) response.redirect(pathAdminAccount);
@@ -112,6 +120,7 @@ router.post(
   pathAccountSignIn,
   accountFormValidationChains.requireSignInEmail(),
   accountFormValidationChains.requireSignInPassword(),
+
   (request, response, next): void => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
@@ -122,6 +131,7 @@ router.post(
     }
     next();
   },
+
   (request, response): void => {
     const title = 'Sign In';
     const session = request.session as
@@ -129,8 +139,11 @@ router.post(
       | null
       | undefined;
 
-    signIn(request)
-      .then((user) => {
+    const { email } = request.body as UserForm | UserAttributes;
+
+    usersRepository
+      .filter({ email })
+      .then(([user]) => {
         if (session) session.user = user;
         if (user.isAdmin) response.redirect(pathAdminAccount);
         else response.redirect(pathAccount);
@@ -151,29 +164,3 @@ router.get(pathAccountSignOut, (request, response): void => {
   request.session = null;
   response.redirect(pathAccountSignIn);
 });
-
-//
-//
-// Helpers
-const createUser = async (
-  request: Request & Express.Request
-): Promise<UserAttributes> => {
-  const { email, password, isAdmin } = request.body as
-    | UserForm
-    | UserAttributes;
-  const newUser = await usersRepository.create({
-    email,
-    password,
-    isAdmin: Boolean(isAdmin),
-  });
-  await usersRepository.saltPassword(newUser.id);
-  return newUser;
-};
-
-const signIn = async (
-  request: Request & Express.Request
-): Promise<UserAttributes> => {
-  const { email } = request.body as Partial<UserForm> | Partial<UserAttributes>;
-  const [user] = await usersRepository.filter({ email });
-  return user;
-};
