@@ -1,20 +1,14 @@
 [
   {
-    "email": "asd@asd.asd",
-    "password": "26263feb007d908bb05ecaea7bed3575d94495a0ec220cebf67dd018ccfa71534e63c77c9de0ec50a403f11859c053865be5985a6a8bf246f815679d4d0a5206he3e16a784934503b08c1cdbf34829c65",
-    "isAdmin": false,
+    "email": "admin@qwe.qwe",
+    "password": "beada5f9a6e2d6946798f8117dd2646a3e0f5d71981a219372e4f7c687ab8ef20144a481299a9f2da70d8c7b3b341362f05002e64569cc88c51bcac43d311a65hc176ebae5b2ae25d2316c7b83b474066",
+    "isAdmin": true,
     "id": 1
   },
   {
-    "email": "asd2@asd.asd",
-    "password": "e894a3af29e8f166d16b6b3dbafdc50646ae557fa8a64fe1131b3a2ab670583c6809c4231ec9f19f3653cf21fb7cdd2a28a93b281ff3d87e1018dcbea16998dfh14700468a153c95e8f921fcd49a2f5e9",
-    "isAdmin": true,
-    "id": 2
-  },
-  {
-    "email": "qwe@qwe.qwe",
-    "password": "79e749be50da4f3de3fc02110539749e8201870515c8aadb18d3ea7c1a38c1353f0234c8ee9f981833db22d4c68afaf6087c5e15a2adf966ee8df1185a7b831ch051923ec07b290761d5c41e056e93a3b",
+    "email": "normal@qwe.qwe",
+    "password": "82c1676e9c185e3abf1bcca46bf8ec2af9bae1dec68e62c896b6a79f8d8202dd2a4d9fa1330a3ba85cd5bafafc91fdc3bd2403cb0440e0caa9fcc664a28d23f5h6357e17ae5fb180232d06eb413934484",
     "isAdmin": false,
-    "id": 3
+    "id": 2
   }
 ]

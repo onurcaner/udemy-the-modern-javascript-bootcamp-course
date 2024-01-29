@@ -3,7 +3,7 @@ import { body, CustomValidator } from 'express-validator';
 import {
   UserAttributes,
   usersRepository,
-} from '../../../repositories/UsersRepository';
+} from '../../repositories/UsersRepository';
 
 export interface UserForm {
   email: string;
@@ -63,7 +63,7 @@ const checkIfPasswordIsCorrect: CustomValidator = async (
   else throw new Error('Incorrect password');
 };
 
-export const accountValidationChains = {
+export const accountFormValidationChains = {
   requireSignUpEmail: () =>
     body(UserFormKeys.email)
       .trim()

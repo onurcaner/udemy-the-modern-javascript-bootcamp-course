@@ -1,7 +1,8 @@
 import express, { urlencoded } from 'express';
 import cookieSession from 'cookie-session';
+
 import { EXPRESS_PORT } from './config';
-import { adminRouters } from './routes/admin/admin';
+import { routers } from './routes';
 
 const app = express();
 app.use(
@@ -11,12 +12,12 @@ app.use(
     keys: ['K5JF8DW8932J0OC4VV09DA12GF7IK8A02'],
   }),
   (request, _response, next) => {
-    console.log('>>', request.method, request.path);
+    console.log(request.method, '>>', request.path);
     next();
   }
 );
 
-app.use(...[...adminRouters]);
+app.use(...routers);
 
 app.listen(EXPRESS_PORT, () => {
   console.log(`App listening on port ${EXPRESS_PORT}`);

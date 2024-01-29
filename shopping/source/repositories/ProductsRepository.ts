@@ -1,5 +1,6 @@
-import { PRODUCTS_REPOSITORY_FILE_NAME } from '../config';
 import { Repository, Attributes } from './Repository';
+
+import { PRODUCTS_REPOSITORY_FILE_NAME } from '../config';
 
 export interface ProductAttributes extends Attributes {
   title: string;

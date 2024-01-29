@@ -1,12 +1,14 @@
+import { randomBytes, scrypt } from 'node:crypto';
+import { promisify } from 'util';
+
+import { Repository, Attributes } from './Repository';
+
 import {
   USERS_REPOSITORY_FILE_NAME,
   SALT_BYTE_SIZE,
   SCRYPT_KEYLEN,
   HASH_AND_SALT_SEPARATOR,
 } from '../config';
-import { Repository, Attributes } from './Repository';
-import { randomBytes, scrypt } from 'node:crypto';
-import { promisify } from 'util';
 
 export interface UserAttributes extends Attributes {
   email: string;

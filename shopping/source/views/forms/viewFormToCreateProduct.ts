@@ -1,13 +1,14 @@
 import { ValidationError, Result } from 'express-validator';
 
-import { ProductFormKeys } from '../../routes/admin/products/validators';
-
 import {
   getFormError,
   createInputTextHtml,
   createInputUploadHtml,
 } from './formHelpers';
+
 import { pathAdminProductsNew } from '../../routes/pagePaths';
+
+import { ProductFormKeys } from '../../routes/admin/products/validators';
 
 export const viewFormToCreateProduct = (
   errors?: Result<ValidationError>

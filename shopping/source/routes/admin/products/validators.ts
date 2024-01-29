@@ -15,7 +15,6 @@ export enum ProductFormKeys {
 //
 //
 // Custom validators
-
 export const productValidationChains = {
   requireCreateTitle: () =>
     body(ProductFormKeys.title)

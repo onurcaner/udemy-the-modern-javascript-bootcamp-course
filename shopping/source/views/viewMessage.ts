@@ -1,4 +1,4 @@
-export const viewAdminResponse = (message: string): string => {
+export const viewMessage = (message: string): string => {
   return `
     <div class="container">
       <div class="columns is-centered">

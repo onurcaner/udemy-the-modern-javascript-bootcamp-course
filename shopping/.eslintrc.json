@@ -14,6 +14,7 @@
   "plugins": ["@typescript-eslint"],
   "parserOptions": {
     "project": true,
+    "tsconfigRootDir": "__dirname",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -27,5 +28,6 @@
         "destructuredArrayIgnorePattern": "^_"
       }
     ]
-  }
+  },
+  "root": true
 }
