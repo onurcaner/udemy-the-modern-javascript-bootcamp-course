@@ -1,14 +1,13 @@
 [
   {
-    "email": "admin@qwe.qwe",
-    "password": "beada5f9a6e2d6946798f8117dd2646a3e0f5d71981a219372e4f7c687ab8ef20144a481299a9f2da70d8c7b3b341362f05002e64569cc88c51bcac43d311a65hc176ebae5b2ae25d2316c7b83b474066",
-    "isAdmin": true,
+    "email": "normal@email.com",
+    "password": "1059e8ff974c3cf6aa3377b4366d8437208d737a14ce080db80952c9220605345fc98db259f0849e112e0464ab38960a9e2d945e7a11268d34c3469d7d7c4b78h961d00e9389d6832982f3d1ac02fa5d1",
     "id": 1
   },
   {
-    "email": "normal@qwe.qwe",
-    "password": "82c1676e9c185e3abf1bcca46bf8ec2af9bae1dec68e62c896b6a79f8d8202dd2a4d9fa1330a3ba85cd5bafafc91fdc3bd2403cb0440e0caa9fcc664a28d23f5h6357e17ae5fb180232d06eb413934484",
-    "isAdmin": false,
-    "id": 2
+    "email": "admin@email.com",
+    "password": "74633da8dcc2b955600a10b4f5850c8b2514e2769082d3a6edf58d0c2c4ad9a8a522abc0f325ddbb0f3b224ee326f433065635d148debb223ec2fa1e99c7c18dh94dc6785497cb6a62f5ab00191493591",
+    "id": 2,
+    "isAdmin": true
   }
 ]
