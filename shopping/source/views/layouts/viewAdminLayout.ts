@@ -22,10 +22,10 @@ export const viewAdminLayout = ({ content, title }: Layout): string => {
               <div class="navbar-item">
                 <div class="navbar-buttons">
                   <div class="navbar-item">
-                    <a href="${pathAdminAccount}"><i class="fa fa-star"></i> Account</a>
+                    <a href="${pathAdminProducts}"><i class="fa fa-edit"></i> Products</a>
                   </div>
                   <div class="navbar-item">
-                    <a href="${pathAdminProducts}"><i class="fa fa-star"></i> Products</a>
+                    <a href="${pathAdminAccount}"><i class="fa fa-user-tie"></i> Account</a>
                   </div>
                 </div>
               </div>

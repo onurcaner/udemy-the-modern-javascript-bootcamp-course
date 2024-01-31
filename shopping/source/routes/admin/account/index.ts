@@ -1,10 +1,9 @@
 import express from 'express';
 
 import { pathAdminAccount, pathAccountSignIn } from '../../pagePaths';
-import { UserSession } from '../../session';
+import { Session, handleNoSession } from '../../session';
 
 import { viewAdminLayout } from '../../../views/layouts/viewAdminLayout';
-import { viewMessage } from '../../../views/viewMessage';
 import { viewUser } from '../../../views/account/viewAccount';
 
 const router = express.Router();
@@ -16,13 +15,12 @@ export const adminAccountRouter = router;
 router.get(pathAdminAccount, (request, response): void => {
   const title = 'Admin Account';
   const session = request.session as
-    | (typeof request.session & UserSession)
+    | (typeof request.session & Session)
     | null
     | undefined;
 
   if (!session) {
-    const message = 'Cookies are disabled';
-    response.send(viewAdminLayout({ title, content: viewMessage(message) }));
+    handleNoSession(response);
     return;
   }
   if (!session.user) {

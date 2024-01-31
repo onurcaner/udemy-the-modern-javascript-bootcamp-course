@@ -8,7 +8,7 @@ import {
 
 import { pathAdminProductsIdEdit } from '../../routes/pagePaths';
 import { ProductFormKeys } from '../../routes/admin/products/validators';
-import { ProductAttributes } from '../../repositories/ProductsRepository';
+import { ProductAttributes } from '../../repositories/productsRepository';
 
 export const viewFormToEditProduct = (
   product: ProductAttributes,

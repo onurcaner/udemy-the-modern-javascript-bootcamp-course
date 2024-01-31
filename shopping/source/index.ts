@@ -11,8 +11,9 @@ app.use(
   cookieSession({
     keys: ['K5JF8DW8932J0OC4VV09DA12GF7IK8A02'],
   }),
-  (request, _response, next) => {
+  (request, response, next) => {
     console.log(request.method, '>>', request.path);
+    console.log(request.session);
     next();
   }
 );

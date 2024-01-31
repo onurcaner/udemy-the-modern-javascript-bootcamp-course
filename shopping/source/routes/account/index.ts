@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 
 import { accountFormValidationChains, UserForm } from './formValidators';
 
-import { UserSession } from '../session';
+import { Session, handleNoSession } from '../session';
 import {
   pathAccount,
   pathAccountSignIn,
@@ -15,7 +15,7 @@ import {
 import {
   UserAttributes,
   usersRepository,
-} from '../../repositories/UsersRepository';
+} from '../../repositories/usersRepository';
 import { viewFormToSignUpUser } from '../../views/forms/viewFormToSignUpUser';
 import { viewFormToSignInUser } from '../../views/forms/viewFormToSignInUser';
 import { viewNormalLayout } from '../../views/layouts/viewNormalLayout';
@@ -31,13 +31,12 @@ export const accountRouters = [router];
 router.get(pathAccount, (request, response): void => {
   const title = 'Account';
   const session = request.session as
-    | (typeof request.session & UserSession)
+    | (typeof request.session & Session)
     | null
     | undefined;
 
   if (!session) {
-    const message = 'Cookies are disabled';
-    response.send(viewNormalLayout({ title, content: viewMessage(message) }));
+    handleNoSession(response);
     return;
   }
   if (!session.user) {
@@ -81,7 +80,7 @@ router.post(
   (request, response): void => {
     const title = 'Sign Up';
     const session = request.session as
-      | (typeof request.session & UserSession)
+      | (typeof request.session & Session)
       | null
       | undefined;
     const { email, password, isAdmin } = request.body as
@@ -135,7 +134,7 @@ router.post(
   (request, response): void => {
     const title = 'Sign In';
     const session = request.session as
-      | (typeof request.session & UserSession)
+      | (typeof request.session & Session)
       | null
       | undefined;
 
@@ -161,6 +160,11 @@ router.post(
 //
 // sign out
 router.get(pathAccountSignOut, (request, response): void => {
-  request.session = null;
+  const session = request.session as
+    | (typeof request.session & Session)
+    | null
+    | undefined;
+
+  if (session) session.user = undefined;
   response.redirect(pathAccountSignIn);
 });

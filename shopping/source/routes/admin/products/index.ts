@@ -12,21 +12,19 @@ import { isRequestFromAdmin } from '../account/helpers';
 
 import {
   pathAdminProducts,
-  pathAdminProductsId,
   pathAdminProductsIdEdit,
   pathAdminProductsIdDelete,
   pathAdminProductsNew,
 } from '../../pagePaths';
 
 import { viewAdminLayout } from '../../../views/layouts/viewAdminLayout';
-import { viewMessage } from '../../../views/viewMessage';
 import { viewFormToCreateProduct } from '../../../views/forms/viewFormToCreateProduct';
 import { viewFormToEditProduct } from '../../../views/forms/viewFormToEditProduct';
 import {
   ProductAttributes,
   productsRepository,
-} from '../../../repositories/ProductsRepository';
-import { viewAdminProducts } from '../../../views/products/viewAdminProducts';
+} from '../../../repositories/productsRepository';
+import { viewAdminProducts } from '../../../views/admin/viewAdminProducts';
 
 const router = express.Router();
 export const adminProductsRouter = router;
@@ -147,15 +145,28 @@ router.post(
         });
       })
       .then(() => {
-        response.redirect(
-          pathAdminProductsId.replace(':id', request.params.id)
-        );
+        response.redirect(pathAdminProducts);
       })
       .catch((err) => {
         if (err instanceof Error)
           response.send(
             viewAdminLayout({ title: pageTitle, content: err.message })
           );
+      });
+  }
+);
+
+router.post(
+  pathAdminProductsIdDelete,
+  isRequestFromAdmin,
+  (request, response): void => {
+    productsRepository
+      .delete(+request.params.id)
+      .then(() => {
+        response.redirect(pathAdminProducts);
+      })
+      .catch((_err) => {
+        return;
       });
   }
 );

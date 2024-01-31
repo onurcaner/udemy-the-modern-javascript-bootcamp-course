@@ -1,4 +1,6 @@
-import { ProductAttributes } from '../../repositories/ProductsRepository';
+import { viewFormToDeleteProduct } from '../forms/viewFormToDeleteProduct';
+
+import { ProductAttributes } from '../../repositories/productsRepository';
 import {
   pathAdminProducts,
   pathAdminProductsNew,
@@ -18,7 +20,7 @@ const viewAdminProduct = (product: ProductAttributes): string => {
         </a>
       </td>
       <td>
-        <button class="button is-danger">Delete</button>
+        ${viewFormToDeleteProduct(product)}
       </td>
   </tr>
   `;

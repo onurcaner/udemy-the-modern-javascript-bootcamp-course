@@ -56,7 +56,10 @@ export class Repository<T extends Attributes> {
   async update(attributes: Partial<T> & Pick<T, 'id'>): Promise<void> {
     const records = await this.getAll();
     const record = records.find((record) => record.id === attributes.id);
-    if (!record) throw new Error('Can not find a record with provided ID');
+    if (!record)
+      throw new Error(
+        `Can not find a record with provided ID: ${attributes.id}`
+      );
     Object.assign(record, attributes);
     await this.commit(records);
   }

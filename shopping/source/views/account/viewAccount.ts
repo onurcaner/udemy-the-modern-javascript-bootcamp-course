@@ -1,4 +1,4 @@
-import { UserAttributes } from '../../repositories/UsersRepository';
+import { UserAttributes } from '../../repositories/usersRepository';
 import { pathAdminProducts, pathAccountSignOut } from '../../routes/pagePaths';
 
 export const viewUser = (user: UserAttributes): string => {

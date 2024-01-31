@@ -1,14 +1,14 @@
 import { RequestHandler } from 'express';
 
 import { pathAccountSignIn } from '../../pagePaths';
-import { UserSession } from '../../session';
+import { Session } from '../../session';
 
 import { viewAdminLayout } from '../../../views/layouts/viewAdminLayout';
 import { viewMessage } from '../../../views/viewMessage';
 
 export const isRequestFromAdmin: RequestHandler = (request, response, next) => {
   const session = request.session as
-    | (typeof request.session & UserSession)
+    | (typeof request.session & Session)
     | null
     | undefined;
 

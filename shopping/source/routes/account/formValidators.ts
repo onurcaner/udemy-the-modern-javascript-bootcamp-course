@@ -3,7 +3,7 @@ import { body, CustomValidator } from 'express-validator';
 import {
   UserAttributes,
   usersRepository,
-} from '../../repositories/UsersRepository';
+} from '../../repositories/usersRepository';
 
 export interface UserForm {
   email: string;
